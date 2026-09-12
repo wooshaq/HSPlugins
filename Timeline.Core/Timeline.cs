@@ -52,7 +52,7 @@ namespace Timeline
 #endif
     [BepInDependency(KKAPI.KoikatuAPI.GUID, KKAPI.KoikatuAPI.VersionConst)]
 #endif
-    public class Timeline : GenericPlugin
+    public partial class Timeline : GenericPlugin
 #if IPA
                             , IEnhancedPlugin
 #endif
@@ -436,6 +436,20 @@ namespace Timeline
 
             if (_ui.gameObject.activeSelf)
             {
+                if (_trimDisabled == false)
+                {
+                    try
+                    {
+                        UpdateTrimRangeOverlay();
+                    }
+                    catch (Exception e)
+                    {
+                        _trimDisabled = true;
+                        ClearTrimRange();
+                        Logger.LogError("Trim: error while updating the trim range, the trim feature is disabled\n" + e);
+                    }
+                }
+
                 if (ConfigKeyframeCopyShortcut.Value.IsDown())
                     CopyKeyframes();
                 else if (ConfigKeyframeCutShortcut.Value.IsDown())
@@ -935,7 +949,7 @@ namespace Timeline
             _divisionsInputField.text = _divisions.ToString();
             _speedInputField.onEndEdit.AddListener(UpdateSpeed);
             _keyframesContainer.gameObject.AddComponent<PointerDownHandler>().onPointerDown = OnKeyframeContainerMouseDown;
-            _gridTop.gameObject.AddComponent<PointerDownHandler>().onPointerDown = OnGridTopMouse;
+            _gridTop.gameObject.AddComponent<PointerDownHandler>().onPointerDown = OnGridTopPointerDown;
             _ui.transform.Find("Timeline Window/Top Container").gameObject.AddComponent<ScrollHandler>().onScroll = e =>
             {
                 if (Input.GetKey(KeyCode.LeftControl))
@@ -964,6 +978,13 @@ namespace Timeline
             //};
             handler.onDrag = (e) =>
             {
+                if (_trimRangeDragging)
+                {
+                    if (_isTrimRangeSelecting)
+                        UpdateTrimRangeSelect(e);
+                    e.Reset();
+                    return;
+                }
                 isPlaying = false;
                 _isDraggingCursor = true;
                 OnGridTopMouse(e);
@@ -971,6 +992,14 @@ namespace Timeline
             };
             handler.onEndDrag = (e) =>
             {
+                if (_trimRangeDragging)
+                {
+                    if (_isTrimRangeSelecting)
+                        EndTrimRangeSelect(e);
+                    _trimRangeDragging = false;
+                    e.Reset();
+                    return;
+                }
                 _isDraggingCursor = false;
                 OnGridTopMouse(e);
                 e.Reset();
@@ -1087,6 +1116,16 @@ namespace Timeline
             _curveInTangentSlider.onValueChanged.AddListener(UpdateCurvePointInTangent);
             _curveOutTangentInputField.onEndEdit.AddListener(UpdateCurvePointOutTangent);
             _curveOutTangentSlider.onValueChanged.AddListener(UpdateCurvePointOutTangent);
+
+            try
+            {
+                InitTrimRange();
+            }
+            catch (Exception e)
+            {
+                _trimDisabled = true;
+                Logger.LogError("Trim: couldn't create the trim range UI, the trim feature is disabled\n" + e);
+            }
 
             _ui.gameObject.SetActive(false);
             _helpPanel.gameObject.SetActive(false);
@@ -4071,6 +4110,7 @@ namespace Timeline
                 _interpolablesTree.Clear();
                 _selectedOCI = null;
                 _selectedKeyframes.Clear();
+                ClearTrimRange();
 
                 List<KeyValuePair<int, ObjectCtrlInfo>> dic = new SortedDictionary<int, ObjectCtrlInfo>(Studio.Studio.Instance.dicObjectCtrl).ToList();
                 SceneLoad(node, dic);

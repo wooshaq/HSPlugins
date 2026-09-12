@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Keyframe.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimelineButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimelineTrim.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tree.cs" />
   </ItemGroup>
   <ItemGroup>

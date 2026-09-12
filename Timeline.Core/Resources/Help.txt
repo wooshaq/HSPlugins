@@ -34,6 +34,11 @@
 - Keyframes can also be deleted by using <b>control + middle click</b> on them. Adding <b>shift</b> to the mix will delete all the selected keyframes plus the one clicked on.
 - Similar to <b>paste insert</b> described above, it's also possible to <b>void delete</b> keyframes. By holding the <b>alt</b> key while deleting keyframes, the ones on the right of the cursor will move back so it fills up the blank space that was left. This operation also work with <b>control + x</b>.
 - Interpolables can also be deleted by using <b>control + middle click</b> on them.
+- <b>Trim</b>: hold <b>control</b> and drag on the <b>black bar</b> above the grid to mark a range (an orange area). <b>Control + click</b> without dragging clears it. <b>Right click</b> on the black bar to open the trim menu:
+    - <b>Trim to ...</b>: deletes all keyframes before and after the range, moves the range to 00:00 and sets the duration to the range length.
+    - <b>Trim (keep original times)</b>: deletes all keyframes before and after the range without moving anything.
+    - <b>Set trim start/end at cursor</b>: precise range edges (type the time in the time field first). <b>Trim range from selected keyframes</b> uses the span of the selected keyframes.
+    - Where an animation crosses a range edge, a keyframe is added on the edge (with the curve split accordingly) so the kept part plays exactly like before. Snap the range to the grid with <b>left shift</b>.
 
 - The list of available interpolables is linked to the object you have selected in your <b>Workspace</b>, so make sure to try and select everything.
 - Some interpolables are also linked to the selected <b>GuideObject</b> (that handle that allows you to move/rotate/scale an object or part of it). Which means that you can (for example) activate IK on a character and manipulate each node independently (each node will have a set of keyframes). 
