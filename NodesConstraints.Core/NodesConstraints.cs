@@ -52,7 +52,7 @@ namespace NodesConstraints
     {
         public const string Name = "NodesConstraints";
         public const string GUID = "com.joan6694.illusionplugins.nodesconstraints";
-        public const string Version = "1.6.4";
+        public const string Version = "1.6.3";
 #if KOIKATSU || AISHOUJO || HONEYSELECT2
         private const string _extSaveKey = "nodesConstraints";
         private const int _saveVersion = 0;
@@ -888,11 +888,11 @@ namespace NodesConstraints
             ConfigMainWindowShortcut = Config.Bind("Config", "Open NodeConstraints UI", new KeyboardShortcut(KeyCode.I, KeyCode.LeftControl));
             ConstraintsAreaHeight = Config.Bind("Interface", "Constraints Area Height", 150, new ConfigDescription("", new AcceptableValueRange<int>(40, 300)));
             NodesAreaHeight = Config.Bind("Interface", "Nodes Area Height", 200, new ConfigDescription("", new AcceptableValueRange<int>(40, 300)));
-            ConfigFreeMoveWhenPaused = Config.Bind("Timeline", "Free move when Timeline is paused", FreeMoveMode.SelectedNodes,
+            ConfigFreeMoveWhenPaused = Config.Bind("Timeline", "Free move when Timeline is paused", FreeMoveMode.Off,
                 "When Timeline is not playing, constrained nodes can be moved by hand and the constraint offset is recalculated from their new position afterwards.\n" +
                 "SelectedNodes - only constraints whose child node is currently selected are released (offset is updated when the node is deselected or playback starts).\n" +
                 "AllNodes - all constraints with a node as the child are released while paused (offsets of moved nodes are updated when playback starts).\n" +
-                "Off - original behaviour. Requires Timeline.");
+                "Off - original behaviour (default). Requires Timeline.");
 
             _self = this;
 #if HONEYSELECT
